@@ -1,0 +1,66 @@
+{
+  "name": "log-chopper",
+  "description": "chop your logs in half",
+  "version": "0.0.0",
+  "author": "Philipe Navarro @rasphilco",
+  "bugs": "https://github.com/rasphilco/log-chopper/issues",
+  "dependencies": {
+    "fs-extra": "2.1.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
+    "babel-eslint": "7.1.1",
+    "babel-jest": "^19.0.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
+    "babel-plugin-transform-flow-strip-types": "6.22.0",
+    "codecov": "^2.0.1",
+    "flow-bin": "^0.41.0",
+    "flow-copy-source": "1.1.0",
+    "flow-typed": "2.0.0",
+    "jest": "^19.0.2",
+    "jsdoc-babel": "0.3.0",
+    "jsdoc-to-markdown": "3.0.0",
+    "nock": "^9.0.9",
+    "rimraf": "^2.6.1",
+    "standard": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=7.6.0"
+  },
+  "homepage": "https://github.com/rasphilco/log-chopper",
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
+  },
+  "keywords": [
+    "log",
+    "truncate",
+    "truncator"
+  ],
+  "license": "ISC",
+  "main": "lib/chopper.js",
+  "repository": "rasphilco/log-chopper",
+  "scripts": {
+    "build": "babel src -d lib --ignore '*.test.js'",
+    "clean": "rimraf lib",
+    "copy-flow": "flow-copy-source -v -i '*.test.js' src lib",
+    "doc": "jsdoc2md -c doc/jsdoc2md.json --files src/chopper.js > README.md",
+    "prepare": "npm run clean && npm run build && npm run copy-flow",
+    "test": "jest && flow && standard",
+    "version": "npm run doc && git add README.md",
+    "watch": "babel --watch src -d lib --ignore '*.test.js'"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "env": [
+      "jest"
+    ],
+    "globals": [],
+    "ignore": [
+      "flow-typed"
+    ]
+  }
+}
