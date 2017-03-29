@@ -1,7 +1,7 @@
 {
   "name": "log-chopper",
   "description": "chop your logs in half",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "Philipe Navarro @rasphilco",
   "bugs": "https://github.com/rasphilco/log-chopper/issues",
   "dependencies": {
