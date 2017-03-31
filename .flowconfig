@@ -1,6 +1,7 @@
 [ignore]
 <PROJECT_ROOT>/lib/.*
 .*/node_modules/*
+<PROJECT_ROOT>/vendor/*
 
 [include]
 

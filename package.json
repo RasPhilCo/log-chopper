@@ -5,7 +5,8 @@
   "author": "Philipe Navarro @rasphilco",
   "bugs": "https://github.com/rasphilco/log-chopper/issues",
   "dependencies": {
-    "fs-extra": "2.1.2"
+    "fs-extra": "2.1.1",
+    "line-by-line": "0.1.4"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
