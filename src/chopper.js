@@ -1,14 +1,15 @@
 // @flow
 import fs from 'fs-extra'
 import path from 'path'
+import LineReader from '../vendor/line_by_line'
+
+const LOG_CHOPPER_MAX = parseInt(process.env.LOG_CHOPPER_MAX || 100000)
 
 /**
  * Utility for truncating logs
  * @class
  */
 export default class LogChopper {
-  static LOG_CHOPPER_MAX = parseInt(process.env.LOG_CHOPPER_MAX || 100000, 10)
-
   /**
    * chop a log file in half
    * @param {string} filepath - log path
@@ -18,17 +19,19 @@ export default class LogChopper {
    * await chopper.chop('/path/to/log')
    * ```
    */
-  static async chop (filepath: string) {
+  static async chop (filepath: string, logLineMax: number = LOG_CHOPPER_MAX) {
     let file = path.normalize(filepath)
-    let errorLogBits = fs.readFileSync(file).toString().split('\n')
-    let logLength = errorLogBits.length
-    if (logLength >= this.LOG_CHOPPER_MAX) {
-      let tempfile = file + '.tmp'
-      fs.removeSync(tempfile)
-      fs.moveSync(file, tempfile)
-      let truncErrorLogBits = errorLogBits.slice(~~(logLength / 2), logLength)
-      fs.writeFileSync(filepath, truncErrorLogBits.join('\n'))
-      fs.removeSync(tempfile)
+    let lines = []
+    let log = new LineReader(file)
+    var line
+    while ((line = await log.readLine()) !== null) {
+      if (lines.length >= logLineMax) lines.shift()
+      lines.push(line)
+    }
+    let logLength = lines.length
+    if (logLength >= logLineMax) {
+      let truncLines = lines.slice(~~(logLength / 2), logLength)
+      fs.outputFileSync(file, truncLines.join('\n'))
     }
   }
 }

@@ -6,11 +6,12 @@ import fs from 'fs-extra'
 
 import Chopper from './chopper'
 
+const LOG_CHOPPER_MAX = 100000
 const tempErrorLog = path.join(__dirname, '..', 'tmp', 'error.log')
 
-function createTmpErrorLog () {
+function createTmpErrorLog (logLength = LOG_CHOPPER_MAX) {
   let createBits = []
-  for (var i = 0; i < (100000 - 1); i++) createBits.push('a\n')
+  for (var i = 0; i < (logLength - 1); i++) createBits.push('a\n')
   createBits.push('a')
   fs.ensureFileSync(tempErrorLog)
   fs.writeFileSync(tempErrorLog, createBits.join(''))
@@ -27,16 +28,13 @@ afterEach(() => {
 describe('Chopper.chop()', () => {
   test('chops a file in half', async () => {
     createTmpErrorLog()
-    let oldLogLength = errorLogLength()
-    await Chopper.chop(tempErrorLog)
-    expect(errorLogLength()).toBe(~~(oldLogLength / 2))
+    await Chopper.chop(tempErrorLog, LOG_CHOPPER_MAX)
+    expect(errorLogLength()).toBe(~~(LOG_CHOPPER_MAX / 2))
   })
 
   test('does not chop a file if less than LOG_CHOPPER_MAX', async () => {
-    Chopper.LOG_CHOPPER_MAX = 200000
     createTmpErrorLog()
-    let oldLogLength = errorLogLength()
-    await Chopper.chop(tempErrorLog)
-    expect(errorLogLength()).toBe(oldLogLength)
+    await Chopper.chop(tempErrorLog, LOG_CHOPPER_MAX * 2)
+    expect(errorLogLength()).toBe(LOG_CHOPPER_MAX)
   })
 })
