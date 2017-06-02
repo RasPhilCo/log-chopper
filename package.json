@@ -5,8 +5,7 @@
   "author": "Philipe Navarro @rasphilco",
   "bugs": "https://github.com/rasphilco/log-chopper/issues",
   "dependencies": {
-    "byline": "5.x",
-    "graceful-fs": "4.x"
+    "byline": "5.x"
   },
   "devDependencies": {
     "babel-cli": "6.24.1",
