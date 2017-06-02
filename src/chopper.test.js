@@ -26,13 +26,13 @@ afterEach(() => {
 })
 
 describe('Chopper.chop()', () => {
-  test('chops a file in half', async () => {
+  test('truncates to 100 lines', async () => {
     createTmpErrorLog()
-    await Chopper.chop(tempErrorLog, LOG_CHOPPER_MAX)
-    expect(errorLogLength()).toBe(~~(LOG_CHOPPER_MAX / 2))
+    await Chopper.chop(tempErrorLog, 100)
+    expect(errorLogLength()).toBe(100)
   })
 
-  test('does not chop a file if less than LOG_CHOPPER_MAX', async () => {
+  test('does not truncate when max is greater', async () => {
     createTmpErrorLog()
     await Chopper.chop(tempErrorLog, LOG_CHOPPER_MAX * 2)
     expect(errorLogLength()).toBe(LOG_CHOPPER_MAX)
