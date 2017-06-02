@@ -24,7 +24,8 @@
     "jsdoc-to-markdown": "3.0.0",
     "nock": "9.0.13",
     "rimraf": "^2.6.1",
-    "standard": "10.0.2"
+    "standard": "10.0.2",
+    "tmp": "0.0.31"
   },
   "files": [
     "lib"
