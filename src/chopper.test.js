@@ -1,40 +1,38 @@
 // @flow
 /* global test, expect, describe, afterEach */
 
-import path from 'path'
 import fs from 'fs-extra'
+import tmp from 'tmp'
 
 import Chopper from './chopper'
 
 const LOG_CHOPPER_MAX = 100000
-const tempErrorLog = path.join(__dirname, '..', 'tmp', 'error.log')
 
 function createTmpErrorLog (logLength = LOG_CHOPPER_MAX) {
+  let f = tmp.tmpNameSync()
   let createBits = []
   for (var i = 0; i < (logLength - 1); i++) createBits.push('a\n')
   createBits.push('a')
-  fs.ensureFileSync(tempErrorLog)
-  fs.writeFileSync(tempErrorLog, createBits.join(''))
+  fs.outputFileSync(f, createBits.join(''))
+  return f
 }
 
-function errorLogLength () {
-  return fs.readFileSync(tempErrorLog).toString().split('\n').length
+function errorLogLength (f: string) {
+  return fs.readFileSync(f).toString().split('\n').length
 }
-
-afterEach(() => {
-  fs.removeSync(tempErrorLog)
-})
 
 describe('Chopper.chop()', () => {
-  test('chops a file in half', async () => {
-    createTmpErrorLog()
-    await Chopper.chop(tempErrorLog, LOG_CHOPPER_MAX)
-    expect(errorLogLength()).toBe(~~(LOG_CHOPPER_MAX / 2))
+  test('truncates to 100 lines', async () => {
+    let f = createTmpErrorLog()
+    await Chopper.chop(f, 100)
+    expect(errorLogLength(f)).toBe(100)
+    fs.removeSync(f)
   })
 
-  test('does not chop a file if less than LOG_CHOPPER_MAX', async () => {
-    createTmpErrorLog()
-    await Chopper.chop(tempErrorLog, LOG_CHOPPER_MAX * 2)
-    expect(errorLogLength()).toBe(LOG_CHOPPER_MAX)
+  test('does not truncate when max is greater', async () => {
+    let f = createTmpErrorLog()
+    await Chopper.chop(f, LOG_CHOPPER_MAX * 2)
+    expect(errorLogLength(f)).toBe(LOG_CHOPPER_MAX)
+    fs.removeSync(f)
   })
 })

@@ -1,7 +1,7 @@
 // @flow
-import fs from 'fs-extra'
+import fs from 'fs'
 import path from 'path'
-import LineReader from '../vendor/line_by_line'
+import byline from 'byline'
 
 const LOG_CHOPPER_MAX = parseInt(process.env.LOG_CHOPPER_MAX || 100000)
 
@@ -11,7 +11,7 @@ const LOG_CHOPPER_MAX = parseInt(process.env.LOG_CHOPPER_MAX || 100000)
  */
 export default class LogChopper {
   /**
-   * chop a log file in half
+   * truncates a log file
    * @param {string} filepath - log path
    * @example
    * ```js
@@ -19,19 +19,20 @@ export default class LogChopper {
    * await chopper.chop('/path/to/log')
    * ```
    */
-  static async chop (filepath: string, logLineMax: number = LOG_CHOPPER_MAX) {
-    let file = path.normalize(filepath)
-    let lines = []
-    let log = new LineReader(file)
-    var line
-    while ((line = await log.readLine()) !== null) {
-      if (lines.length >= logLineMax) lines.shift()
-      lines.push(line)
-    }
-    let logLength = lines.length
-    if (logLength >= logLineMax) {
-      let truncLines = lines.slice(~~(logLength / 2), logLength)
-      fs.outputFileSync(file, truncLines.join('\n'))
-    }
+  static chop (filepath: string, logLineMax: number = LOG_CHOPPER_MAX) {
+    return new Promise((resolve, reject) => {
+      let file = path.normalize(filepath)
+      let lines = []
+      let stream = byline(fs.createReadStream(filepath, {encoding: 'utf8'}))
+      stream.on('error', reject)
+      stream.on('data', line => {
+        if (lines.length >= logLineMax) stream.end()
+        else lines.push(line)
+      })
+      stream.on('end', () => {
+        fs.writeFileSync(file, lines.join('\n'))
+        resolve()
+      })
+    })
   }
 }
