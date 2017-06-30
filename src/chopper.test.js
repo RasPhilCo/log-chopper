@@ -35,4 +35,13 @@ describe('Chopper.chop()', () => {
     expect(errorLogLength(f)).toBe(LOG_CHOPPER_MAX)
     fs.removeSync(f)
   })
+
+  test('fails when file does not exist', async () => {
+    expect.assertions(1)
+    try {
+      await Chopper.chop('FILETHATDOESNOTEXIST')
+    } catch (err) {
+      expect(err).toMatchObject({code: 'ENOENT'})
+    }
+  })
 })

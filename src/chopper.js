@@ -23,7 +23,9 @@ export default class LogChopper {
     return new Promise((resolve, reject) => {
       let file = path.normalize(filepath)
       let lines = []
-      let stream = byline(fs.createReadStream(filepath, {encoding: 'utf8'}))
+      let fileStream = fs.createReadStream(filepath, {encoding: 'utf8'})
+      fileStream.on('error', reject)
+      let stream = byline(fileStream)
       stream.on('error', reject)
       stream.on('data', line => {
         if (lines.length >= logLineMax) stream.end()
