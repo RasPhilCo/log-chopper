@@ -1,7 +1,7 @@
 {
   "name": "log-chopper",
   "description": "truncates a log file",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Philipe Navarro @rasphilco",
   "bugs": "https://github.com/rasphilco/log-chopper/issues",
   "dependencies": {
