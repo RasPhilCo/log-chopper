@@ -12,6 +12,7 @@
     "babel-core": "^6.25.0",
     "babel-eslint": "7.2.3",
     "babel-jest": "20.0.3",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "6.24.1",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
@@ -31,7 +32,7 @@
     "lib"
   ],
   "engines": {
-    "node": ">=7.6.0"
+    "node": ">=6.0.0"
   },
   "homepage": "https://github.com/rasphilco/log-chopper",
   "jest": {
